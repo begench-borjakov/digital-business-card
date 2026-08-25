@@ -1,120 +1,154 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { useQuery } from '@apollo/client/react'
+
 import './App.css'
+import { AboutSection } from './components/AboutSection/AboutSection'
+import { ExperienceSection } from './components/ExperienceSection/ExperienceSection'
+import { LanguagesSection } from './components/LanguagesSection/LanguagesSection'
+import { ProfileHeader } from './components/ProfileHeader/ProfileHeader'
+import { ProfileEditForm } from './components/ProfileEditForm/ProfileEditForm'
+import { ProjectsSection } from './components/ProjectsSection/ProjectsSection'
+import { SkillsSection } from './components/SkillsSection/SkillsSection'
+import { experience } from './data/experience'
+import { spokenLanguages } from './data/spoken-languages'
+import { GET_PROFILE } from './graphql/profile.queries'
+import { GET_PROJECTS } from './graphql/project.queries'
+import { GET_SKILLS } from './graphql/skill.queries'
+import type { GetProfileQuery } from './types/profile.types'
+import type { GetProjectsQuery } from './types/project.types'
+import type { GetSkillsQuery } from './types/skill.types'
+
+function LoadingState() {
+  return (
+    <main className="app-shell" aria-busy="true" aria-label="Loading portfolio">
+      <div className="loading-header">
+        <div className="skeleton skeleton--brand" />
+        <div className="skeleton skeleton--status" />
+      </div>
+      <div className="loading-hero">
+        <div className="skeleton skeleton--avatar" />
+        <div className="loading-copy">
+          <div className="skeleton skeleton--label" />
+          <div className="skeleton skeleton--title" />
+          <div className="skeleton skeleton--subtitle" />
+          <div className="skeleton skeleton--button" />
+        </div>
+      </div>
+      <div className="loading-section">
+        <div className="skeleton skeleton--label" />
+        <div className="loading-lines">
+          <div className="skeleton skeleton--line" />
+          <div className="skeleton skeleton--line skeleton--line-short" />
+        </div>
+      </div>
+      <p className="loading-label">Loading portfolio...</p>
+    </main>
+  )
+}
+
+type ErrorStateProps = {
+  onRetry: () => void
+}
+
+function ErrorState({ onRetry }: ErrorStateProps) {
+  return (
+    <main className="feedback-page">
+      <div className="feedback-card" role="alert">
+        <span className="feedback-card__code">Connection error</span>
+        <h1>Portfolio is temporarily unavailable</h1>
+        <p>
+          We could not load the data. Make sure the API is running and try again.
+        </p>
+        <button type="button" onClick={onRetry}>
+          Try again
+        </button>
+      </div>
+    </main>
+  )
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [isProfileFormOpen, setIsProfileFormOpen] = useState(false)
+  const profileQuery = useQuery<GetProfileQuery>(GET_PROFILE)
+  const skillsQuery = useQuery<GetSkillsQuery>(GET_SKILLS)
+  const projectsQuery = useQuery<GetProjectsQuery>(GET_PROJECTS)
+
+  const isLoading =
+    profileQuery.loading || skillsQuery.loading || projectsQuery.loading
+  const hasError =
+    profileQuery.error || skillsQuery.error || projectsQuery.error
+
+  function retryQueries(): void {
+    void Promise.all([
+      profileQuery.refetch(),
+      skillsQuery.refetch(),
+      projectsQuery.refetch(),
+    ])
+  }
+
+  if (isLoading) {
+    return <LoadingState />
+  }
+
+  if (
+    hasError ||
+    !profileQuery.data?.profile ||
+    !skillsQuery.data ||
+    !projectsQuery.data
+  ) {
+    return <ErrorState onRetry={retryQueries} />
+  }
+
+  const { profile } = profileQuery.data
+
+  function toggleEditMode(): void {
+    if (isEditMode) {
+      setIsProfileFormOpen(false)
+    }
+    setIsEditMode(!isEditMode)
+  }
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
+      <div className="app-shell" id="top">
+        <ProfileHeader
+          profile={profile}
+          isEditMode={isEditMode}
+          onToggleEditMode={toggleEditMode}
+          onEditProfile={() => setIsProfileFormOpen(true)}
+        />
+
+        <main>
+          <AboutSection about={profile.about} />
+          <SkillsSection
+            skills={skillsQuery.data.skills}
+            isEditMode={isEditMode}
+          />
+          <LanguagesSection languages={spokenLanguages} />
+          <ExperienceSection experience={experience} />
+          <ProjectsSection
+            projects={projectsQuery.data.projects}
+            githubUrl={profile.githubUrl}
+            isEditMode={isEditMode}
+          />
+        </main>
+
+        <footer className="site-footer">
           <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+            Built with <span>NestJS</span>, <span>GraphQL</span> and{' '}
+            <span>React</span>
           </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+          <p>© {new Date().getFullYear()} {profile.name}</p>
+        </footer>
+      </div>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      {isProfileFormOpen && (
+        <ProfileEditForm
+          profile={profile}
+          onClose={() => setIsProfileFormOpen(false)}
+        />
+      )}
     </>
   )
 }
