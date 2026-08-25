@@ -37,7 +37,22 @@ async function main(): Promise<void> {
       data: [
         {
           name: 'TypeScript',
-          category: 'Languages',
+          category: 'Programming',
+          profileId: profile.id,
+        },
+        {
+          name: 'JavaScript',
+          category: 'Programming',
+          profileId: profile.id,
+        },
+        {
+          name: 'C',
+          category: 'Programming',
+          profileId: profile.id,
+        },
+        {
+          name: 'C++',
+          category: 'Programming',
           profileId: profile.id,
         },
         {
@@ -56,7 +71,22 @@ async function main(): Promise<void> {
           profileId: profile.id,
         },
         {
+          name: 'REST API',
+          category: 'Backend',
+          profileId: profile.id,
+        },
+        {
+          name: 'GraphQL',
+          category: 'Backend',
+          profileId: profile.id,
+        },
+        {
           name: 'PostgreSQL',
+          category: 'Databases',
+          profileId: profile.id,
+        },
+        {
+          name: 'MySQL',
           category: 'Databases',
           profileId: profile.id,
         },
@@ -76,6 +106,61 @@ async function main(): Promise<void> {
           profileId: profile.id,
         },
         {
+          name: 'Mongoose',
+          category: 'ORM',
+          profileId: profile.id,
+        },
+        {
+          name: 'JWT',
+          category: 'Security',
+          profileId: profile.id,
+        },
+        {
+          name: 'RBAC',
+          category: 'Security',
+          profileId: profile.id,
+        },
+        {
+          name: 'Guards',
+          category: 'Security',
+          profileId: profile.id,
+        },
+        {
+          name: 'Validation',
+          category: 'Security',
+          profileId: profile.id,
+        },
+        {
+          name: 'Rate Limiting',
+          category: 'Security',
+          profileId: profile.id,
+        },
+        {
+          name: 'Bitrix24',
+          category: 'Integrations',
+          profileId: profile.id,
+        },
+        {
+          name: 'External REST APIs',
+          category: 'Integrations',
+          profileId: profile.id,
+        },
+        {
+          name: 'AI Integrations',
+          category: 'Integrations',
+          profileId: profile.id,
+        },
+        {
+          name: 'Axios',
+          category: 'Integrations',
+          profileId: profile.id,
+        },
+        {
+          name: 'Jest',
+          category: 'Testing',
+          profileId: profile.id,
+        },
+        {
           name: 'Docker',
           category: 'Tools',
           profileId: profile.id,
@@ -86,13 +171,58 @@ async function main(): Promise<void> {
           profileId: profile.id,
         },
         {
-          name: 'GraphQL',
-          category: 'Backend',
+          name: 'GitHub',
+          category: 'Tools',
           profileId: profile.id,
         },
         {
-          name: 'Jest',
-          category: 'Testing',
+          name: 'GitLab',
+          category: 'Tools',
+          profileId: profile.id,
+        },
+        {
+          name: 'Swagger',
+          category: 'Documentation',
+          profileId: profile.id,
+        },
+        {
+          name: 'OpenAPI',
+          category: 'Documentation',
+          profileId: profile.id,
+        },
+        {
+          name: 'OOP',
+          category: 'Concepts',
+          profileId: profile.id,
+        },
+        {
+          name: 'Repository Pattern',
+          category: 'Concepts',
+          profileId: profile.id,
+        },
+        {
+          name: 'Layered Architecture',
+          category: 'Concepts',
+          profileId: profile.id,
+        },
+        {
+          name: 'Transactions',
+          category: 'Concepts',
+          profileId: profile.id,
+        },
+        {
+          name: 'Soft Delete',
+          category: 'Concepts',
+          profileId: profile.id,
+        },
+        {
+          name: 'CMS',
+          category: 'Other',
+          profileId: profile.id,
+        },
+        {
+          name: 'CRM',
+          category: 'Other',
           profileId: profile.id,
         },
       ],
@@ -101,31 +231,42 @@ async function main(): Promise<void> {
     await prisma.project.createMany({
       data: [
         {
-          name: 'RiseStaff HR SaaS Backend',
+          name: 'Notification Preferences Service',
           description:
-            'Backend development for an HR SaaS platform including authentication, RBAC, business logic, database operations, Bitrix24 integrations and AI-related backend functionality.',
+            'Backend service that evaluates whether notifications can be sent based on user preferences, global policies, quiet hours, region and time.',
           technologies:
-            'NestJS, TypeScript, PostgreSQL, Prisma, Docker, REST API, Bitrix24',
-          githubUrl: null,
+            'TypeScript, Node.js, NestJS, PostgreSQL, Prisma, Jest',
+          githubUrl:
+            'https://github.com/begench-borjakov/notification-preferences-service',
           demoUrl: null,
           profileId: profile.id,
         },
         {
-          name: 'Corporate Leads Backend Module',
+          name: 'Booking API',
           description:
-            'Backend leads module with validation, anti-spam protection, rate limiting, email notifications, logging and PostgreSQL persistence.',
-          technologies: 'NestJS, TypeScript, PostgreSQL, Prisma, Docker, CMS',
-          githubUrl: null,
+            'Booking backend with JWT authentication, event and user CRUD, protection against duplicate bookings and repository-based data access.',
+          technologies:
+            'NestJS, TypeScript, PostgreSQL, Prisma, JWT, Swagger',
+          githubUrl: 'https://github.com/begench-borjakov/booking-api',
           demoUrl: null,
           profileId: profile.id,
         },
         {
-          name: 'Ontology TypeScript SDK',
+          name: 'Auth Service',
           description:
-            'TypeScript SDK for the Ontology blockchain with key and address generation, transaction building, signing, broadcasting, API integration and automated testing.',
+            'Authentication and user management backend with access and refresh tokens, RBAC, guards, user and role management.',
+          technologies: 'NestJS, TypeScript, MongoDB, JWT, Swagger',
+          githubUrl: 'https://github.com/begench-borjakov/auth-service',
+          demoUrl: null,
+          profileId: profile.id,
+        },
+        {
+          name: 'URL Checker',
+          description:
+            'Fullstack application for processing URL-checking jobs in the background with progress tracking, cancellation, timeouts and controlled concurrency.',
           technologies:
-            'Node.js, TypeScript, Axios, elliptic, bs58, big.js, Jest',
-          githubUrl: null,
+            'NestJS, TypeScript, React, Vite, Zustand, Docker',
+          githubUrl: 'https://github.com/begench-borjakov/url-checker',
           demoUrl: null,
           profileId: profile.id,
         },
