@@ -9,11 +9,12 @@ import { ProfileHeader } from './components/ProfileHeader/ProfileHeader'
 import { ProfileEditForm } from './components/ProfileEditForm/ProfileEditForm'
 import { ProjectsSection } from './components/ProjectsSection/ProjectsSection'
 import { SkillsSection } from './components/SkillsSection/SkillsSection'
-import { experience } from './data/experience'
 import { spokenLanguages } from './data/spoken-languages'
+import { GET_EXPERIENCES } from './graphql/experience.queries'
 import { GET_PROFILE } from './graphql/profile.queries'
 import { GET_PROJECTS } from './graphql/project.queries'
 import { GET_SKILLS } from './graphql/skill.queries'
+import type { GetExperiencesQuery } from './types/experience.types'
 import type { GetProfileQuery } from './types/profile.types'
 import type { GetProjectsQuery } from './types/project.types'
 import type { GetSkillsQuery } from './types/skill.types'
@@ -73,17 +74,25 @@ function App() {
   const profileQuery = useQuery<GetProfileQuery>(GET_PROFILE)
   const skillsQuery = useQuery<GetSkillsQuery>(GET_SKILLS)
   const projectsQuery = useQuery<GetProjectsQuery>(GET_PROJECTS)
+  const experiencesQuery = useQuery<GetExperiencesQuery>(GET_EXPERIENCES)
 
   const isLoading =
-    profileQuery.loading || skillsQuery.loading || projectsQuery.loading
+    profileQuery.loading ||
+    skillsQuery.loading ||
+    projectsQuery.loading ||
+    experiencesQuery.loading
   const hasError =
-    profileQuery.error || skillsQuery.error || projectsQuery.error
+    profileQuery.error ||
+    skillsQuery.error ||
+    projectsQuery.error ||
+    experiencesQuery.error
 
   function retryQueries(): void {
     void Promise.all([
       profileQuery.refetch(),
       skillsQuery.refetch(),
       projectsQuery.refetch(),
+      experiencesQuery.refetch(),
     ])
   }
 
@@ -95,7 +104,8 @@ function App() {
     hasError ||
     !profileQuery.data?.profile ||
     !skillsQuery.data ||
-    !projectsQuery.data
+    !projectsQuery.data ||
+    !experiencesQuery.data
   ) {
     return <ErrorState onRetry={retryQueries} />
   }
@@ -126,7 +136,10 @@ function App() {
             isEditMode={isEditMode}
           />
           <LanguagesSection languages={spokenLanguages} />
-          <ExperienceSection experience={experience} />
+          <ExperienceSection
+            experiences={experiencesQuery.data.experiences}
+            isEditMode={isEditMode}
+          />
           <ProjectsSection
             projects={projectsQuery.data.projects}
             githubUrl={profile.githubUrl}
