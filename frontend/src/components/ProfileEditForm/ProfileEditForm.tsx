@@ -27,7 +27,10 @@ export function ProfileEditForm({
   const [title, setTitle] = useState(profile.title)
   const [about, setAbout] = useState(profile.about)
   const [email, setEmail] = useState(profile.email ?? '')
+  const [phone, setPhone] = useState(profile.phone ?? '')
+  const [telegram, setTelegram] = useState(profile.telegram ?? '')
   const [githubUrl, setGithubUrl] = useState(profile.githubUrl ?? '')
+  const [linkedinUrl, setLinkedinUrl] = useState(profile.linkedinUrl ?? '')
   const [location, setLocation] = useState(profile.location ?? '')
   const [updateProfile, { loading, error }] = useMutation<
     UpdateProfileMutation,
@@ -48,7 +51,10 @@ export function ProfileEditForm({
             title: title.trim(),
             about: about.trim(),
             email: nullableValue(email),
+            phone: nullableValue(phone),
+            telegram: nullableValue(telegram),
             githubUrl: nullableValue(githubUrl),
+            linkedinUrl: nullableValue(linkedinUrl),
             location: nullableValue(location),
           },
         },
@@ -128,11 +134,43 @@ export function ProfileEditForm({
             </label>
 
             <label className="form-field">
+              <span>Phone</span>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                maxLength={30}
+                placeholder="Optional"
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Telegram</span>
+              <input
+                value={telegram}
+                onChange={(event) => setTelegram(event.target.value)}
+                maxLength={100}
+                placeholder="@username or https://t.me/username"
+              />
+            </label>
+
+            <label className="form-field">
               <span>GitHub URL</span>
               <input
                 type="url"
                 value={githubUrl}
                 onChange={(event) => setGithubUrl(event.target.value)}
+                maxLength={500}
+                placeholder="Optional"
+              />
+            </label>
+
+            <label className="form-field">
+              <span>LinkedIn URL</span>
+              <input
+                type="url"
+                value={linkedinUrl}
+                onChange={(event) => setLinkedinUrl(event.target.value)}
                 maxLength={500}
                 placeholder="Optional"
               />

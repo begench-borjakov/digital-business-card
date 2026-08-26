@@ -7,7 +7,10 @@ export const UPDATE_PROFILE = gql`
       title
       about
       email
+      phone
+      telegram
       githubUrl
+      linkedinUrl
       location
     }
   }

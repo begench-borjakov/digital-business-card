@@ -1,6 +1,20 @@
-import { phoneContact, staticContactLinks, type ContactLink } from '../../data/contacts'
 import type { Profile } from '../../types/profile.types'
 import { EditModeToggle } from '../EditModeToggle/EditModeToggle'
+import {
+  ContactIcon,
+  ContactMetaPill,
+  HeroContactCard,
+  type ContactIconName,
+} from '../HeroContactCard/HeroContactCard'
+
+type ContactLink = {
+  label: string
+  value: string
+  href: string
+  external: boolean
+  primary?: boolean
+  icon: ContactIconName
+}
 
 type ProfileHeaderProps = {
   profile: Profile
@@ -9,34 +23,75 @@ type ProfileHeaderProps = {
   onEditProfile: () => void
 }
 
+function getTelegramUrl(value: string): string {
+  return value.startsWith('@')
+    ? `https://t.me/${value.slice(1)}`
+    : value
+}
+
+function getPhoneUrl(value: string): string {
+  const trimmedValue = value.trim()
+  const prefix = trimmedValue.startsWith('+') ? '+' : ''
+  const digits = trimmedValue.replace(/\D/g, '')
+
+  return `tel:${prefix}${digits}`
+}
+
+function getReadableUrl(value: string): string {
+  return value
+    .replace(/^https?:\/\//i, '')
+    .replace(/^www\./i, '')
+    .replace(/\/$/, '')
+}
+
 export function ProfileHeader({
   profile,
   isEditMode,
   onToggleEditMode,
   onEditProfile,
 }: ProfileHeaderProps) {
-  const contactLinks: ContactLink[] = [
-    ...(profile.email
-      ? [
-          {
-            label: 'Email',
-            href: `mailto:${profile.email}`,
-            external: false,
-          },
-        ]
-      : []),
-    staticContactLinks[0],
-    ...(profile.githubUrl
-      ? [
-          {
-            label: 'GitHub',
-            href: profile.githubUrl,
-            external: true,
-          },
-        ]
-      : []),
-    staticContactLinks[1],
-  ]
+  const contactLinks: ContactLink[] = []
+
+  if (profile.email) {
+    contactLinks.push({
+      label: 'Email',
+      value: profile.email,
+      href: `mailto:${profile.email}`,
+      external: false,
+      primary: true,
+      icon: 'email',
+    })
+  }
+
+  if (profile.telegram) {
+    contactLinks.push({
+      label: 'Telegram',
+      value: profile.telegram,
+      href: getTelegramUrl(profile.telegram),
+      external: true,
+      icon: 'telegram',
+    })
+  }
+
+  if (profile.githubUrl) {
+    contactLinks.push({
+      label: 'GitHub',
+      value: getReadableUrl(profile.githubUrl),
+      href: profile.githubUrl,
+      external: true,
+      icon: 'github',
+    })
+  }
+
+  if (profile.linkedinUrl) {
+    contactLinks.push({
+      label: 'LinkedIn',
+      value: getReadableUrl(profile.linkedinUrl),
+      href: profile.linkedinUrl,
+      external: true,
+      icon: 'linkedin',
+    })
+  }
 
   return (
     <header className="profile-header">
@@ -69,32 +124,35 @@ export function ProfileHeader({
           <h1>{profile.name}</h1>
           <p className="profile-title">{profile.title}</p>
 
-          <div className="contact-list" aria-label="Contact information">
-            {contactLinks.map((contact, index) => (
-              <a
-                className={
-                  index === 0
-                    ? 'contact-link contact-link--primary'
-                    : 'contact-link'
-                }
+          <div className="hero-contact-grid" aria-label="Contact information">
+            {contactLinks.map((contact) => (
+              <HeroContactCard
+                label={contact.label}
+                value={contact.value}
                 href={contact.href}
-                target={contact.external ? '_blank' : undefined}
-                rel={contact.external ? 'noreferrer noopener' : undefined}
+                highlighted={contact.primary}
+                external={contact.external}
+                icon={<ContactIcon name={contact.icon} />}
                 key={contact.label}
-              >
-                {contact.label}
-                {contact.external && <span aria-hidden="true">↗</span>}
-              </a>
+              />
             ))}
           </div>
 
-          <div className="secondary-contacts">
-            <a href={phoneContact.href}>{phoneContact.label}</a>
+          <div className="contact-meta-row">
+            {profile.phone && (
+              <ContactMetaPill
+                label="Phone"
+                value={profile.phone}
+                href={getPhoneUrl(profile.phone)}
+                icon={<ContactIcon name="phone" />}
+              />
+            )}
             {profile.location && (
-              <span className="location">
-                <span aria-hidden="true">⌖</span>
-                {profile.location}
-              </span>
+              <ContactMetaPill
+                label="Location"
+                value={profile.location.replace(/\s*\/\s*/g, ' / ')}
+                icon={<ContactIcon name="location" />}
+              />
             )}
           </div>
 
@@ -104,7 +162,8 @@ export function ProfileHeader({
               type="button"
               onClick={onEditProfile}
             >
-              Edit profile
+              <ContactIcon name="edit" />
+              <span>Edit profile</span>
             </button>
           )}
         </div>
