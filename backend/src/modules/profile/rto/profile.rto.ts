@@ -18,7 +18,16 @@ export class ProfileRto {
   email!: string | null;
 
   @Field(() => String, { nullable: true })
+  phone!: string | null;
+
+  @Field(() => String, { nullable: true })
+  telegram!: string | null;
+
+  @Field(() => String, { nullable: true })
   githubUrl!: string | null;
+
+  @Field(() => String, { nullable: true })
+  linkedinUrl!: string | null;
 
   @Field(() => String, { nullable: true })
   location!: string | null;

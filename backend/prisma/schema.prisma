@@ -14,11 +14,15 @@ model Profile {
   title     String
   about     String
   email     String?
+  phone     String?
+  telegram  String?
   githubUrl String?
+  linkedinUrl String?
   location  String?
 
-  skills   Skill[]
-  projects Project[]
+  skills      Skill[]
+  projects    Project[]
+  experiences Experience[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -46,6 +50,27 @@ model Project {
   technologies String?
   githubUrl    String?
   demoUrl      String?
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+}
+
+model Experience {
+  id             String   @id @default(uuid())
+  company        String
+  role           String
+  employmentType String?
+  startDate      String
+  endDate        String?
+  current        Boolean  @default(false)
+  description    String
+  highlights     String[]
+  technologies   String[]
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)

@@ -17,6 +17,7 @@ async function main(): Promise<void> {
   });
 
   try {
+    await prisma.experience.deleteMany();
     await prisma.project.deleteMany();
     await prisma.skill.deleteMany();
     await prisma.profile.deleteMany();
@@ -28,7 +29,11 @@ async function main(): Promise<void> {
         about:
           'Backend Developer with commercial experience building server-side applications, APIs and third-party integrations using Node.js, NestJS, TypeScript, PostgreSQL and MongoDB.',
         email: 'begenchborjakov0@gmail.com',
+        phone: '+90 537 524 52 64',
+        telegram: '@Begench_Borjakov',
         githubUrl: 'https://github.com/begench-borjakov',
+        linkedinUrl:
+          'https://linkedin.com/in/begench-borjakov-862b84395',
         location: null,
       },
     });
@@ -268,6 +273,115 @@ async function main(): Promise<void> {
             'NestJS, TypeScript, React, Vite, Zustand, Docker',
           githubUrl: 'https://github.com/begench-borjakov/url-checker',
           demoUrl: null,
+          profileId: profile.id,
+        },
+      ],
+    });
+
+    await prisma.experience.createMany({
+      data: [
+        {
+          company: 'RiseStaff',
+          role: 'Backend Developer',
+          employmentType: 'Project-based',
+          startDate: '05/2026',
+          endDate: null,
+          current: true,
+          description:
+            'Developed and maintained backend features for an HR SaaS platform using NestJS, TypeScript, PostgreSQL and Prisma.',
+          highlights: [
+            'Authentication and authorization',
+            'RBAC',
+            'Backend business logic',
+            'REST API development',
+            'Database operations',
+            'Bitrix24 integrations',
+            'AI-related backend functionality',
+          ],
+          technologies: [
+            'NestJS',
+            'TypeScript',
+            'PostgreSQL',
+            'Prisma',
+            'Docker',
+            'REST API',
+            'Bitrix24',
+          ],
+          profileId: profile.id,
+        },
+        {
+          company: 'Innovatica Systems',
+          role: 'Backend Developer',
+          employmentType: null,
+          startDate: '02/2026',
+          endDate: '05/2026',
+          current: false,
+          description:
+            'Built a backend leads module for a corporate website using NestJS and TypeScript.',
+          highlights: [
+            'Request and DTO validation',
+            'Anti-spam protection',
+            'Rate limiting',
+            'Email notifications',
+            'Logging',
+            'PostgreSQL persistence',
+            'Prisma integration',
+            'CMS configuration/integration',
+          ],
+          technologies: [
+            'NestJS',
+            'TypeScript',
+            'PostgreSQL',
+            'Prisma',
+            'Docker',
+            'CMS',
+          ],
+          profileId: profile.id,
+        },
+        {
+          company: 'Evercode Lab',
+          role: 'Backend Developer Intern',
+          employmentType: null,
+          startDate: '08/2025',
+          endDate: '10/2025',
+          current: false,
+          description: 'Developed a TypeScript SDK for the Ontology blockchain.',
+          highlights: [
+            'Key generation',
+            'Address generation',
+            'Transaction building',
+            'Transaction signing',
+            'Transaction broadcasting',
+            'Integration with public Ontology APIs',
+            'Transaction polling',
+            'Jest testing',
+          ],
+          technologies: [
+            'Node.js',
+            'TypeScript',
+            'Axios',
+            'elliptic',
+            'bs58',
+            'big.js',
+            'Jest',
+          ],
+          profileId: profile.id,
+        },
+        {
+          company: 'Altyn-hyzmat',
+          role: 'Junior Backend Developer',
+          employmentType: null,
+          startDate: '01/2025',
+          endDate: '07/2025',
+          current: false,
+          description: 'Developed REST API endpoints using Node.js and Express.js.',
+          highlights: [
+            'Server-side business logic',
+            'Request validation',
+            'MongoDB queries',
+            'Mongoose schemas and models',
+          ],
+          technologies: ['Node.js', 'Express.js', 'MongoDB', 'Mongoose'],
           profileId: profile.id,
         },
       ],

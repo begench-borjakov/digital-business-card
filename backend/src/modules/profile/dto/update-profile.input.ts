@@ -55,6 +55,29 @@ export class UpdateProfileInput {
   @Field(() => String, { nullable: true })
   @IsOptional()
   @Transform(trimString)
+  @IsString()
+  @Matches(/^\+?[0-9\s().-]{7,30}$/, {
+    message: 'phone must be a valid phone number',
+  })
+  @MaxLength(30)
+  phone?: string | null;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @Transform(trimString)
+  @IsString()
+  @Matches(
+    /^(?:@[A-Za-z0-9_]{5,32}|https?:\/\/(?:www\.)?t\.me\/[A-Za-z0-9_]{5,32}\/?)$/i,
+    {
+      message: 'telegram must be @username or a valid t.me URL',
+    },
+  )
+  @MaxLength(100)
+  telegram?: string | null;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @Transform(trimString)
   @IsUrl({
     protocols: ['http', 'https'],
     require_protocol: true,
@@ -67,6 +90,19 @@ export class UpdateProfileInput {
   )
   @MaxLength(500)
   githubUrl?: string | null;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @Transform(trimString)
+  @IsUrl({
+    protocols: ['http', 'https'],
+    require_protocol: true,
+  })
+  @Matches(/^https?:\/\/(?:www\.)?linkedin\.com\/in\/[A-Za-z0-9_.%-]+\/?$/i, {
+    message: 'linkedinUrl must be a valid LinkedIn profile URL',
+  })
+  @MaxLength(500)
+  linkedinUrl?: string | null;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
