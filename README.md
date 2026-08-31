@@ -32,52 +32,11 @@ A full-stack developer portfolio with a public business-card view and a built-in
 - Safe atomic demo-data seed
 - Docker Compose setup for frontend, backend, and PostgreSQL
 
-## Architecture
-
-Backend modules follow the same layered flow:
-
-```text
-GraphQL Input
-    -> Resolver
-    -> Service
-    -> Repository
-    -> Prisma
-    -> PostgreSQL
-```
-
-Repositories map Prisma models to internal entities. Resolvers map entities to GraphQL response types (RTOs), so Prisma models do not leak through the API boundary.
-
-The frontend keeps GraphQL operations, TypeScript types, forms, and presentation sections in separate files. Apollo Client is the only client-side data layer; mutations refetch the affected query without reloading the page.
-
 ## GraphQL API
 
 The API is available at `http://localhost:3000/graphql`.
 
-### Queries
-
-| Query | Description |
-| --- | --- |
-| `health` | Check API availability |
-| `profile` | Get the portfolio profile |
-| `skills` | Get all skills |
-| `skill(id)` | Get one skill |
-| `projects` | Get all projects |
-| `project(id)` | Get one project |
-| `experiences` | Get all experience entries |
-| `experience(id)` | Get one experience entry |
-
-### Mutations
-
-| Mutation | Description |
-| --- | --- |
-| `updateProfile` | Update profile and contact fields |
-| `createSkill`, `updateSkill`, `deleteSkill` | Manage skills |
-| `createProject`, `updateProject`, `deleteProject` | Manage projects |
-| `createExperience`, `updateExperience`, `deleteExperience` | Manage experience |
-
 ## Run with Docker
-
-Docker Desktop must be running. From the project root:
 
 ```bash
 docker compose up --build
@@ -89,19 +48,10 @@ Services:
 - GraphQL API: http://localhost:3000/graphql
 - PostgreSQL: `localhost:5433`
 
-The backend waits for PostgreSQL, applies committed Prisma migrations, safely seeds an empty database, and then starts NestJS. Existing profile and CRUD data are preserved by the named PostgreSQL volume and are not overwritten on restart.
-
 Run in the background:
 
 ```bash
 docker compose up --build -d
-```
-
-Inspect service status and logs:
-
-```bash
-docker compose ps
-docker compose logs -f
 ```
 
 Stop containers without deleting database data:
@@ -183,41 +133,4 @@ Use the **Edit mode** button in the portfolio header to manage data:
 - create, update, and delete Projects;
 - create, update, and delete Experience entries.
 
-Edit mode is intentionally unauthenticated for this local take-home demonstration. It must be protected before deploying the application as a public editable service.
-
-## Validation and persistence
-
-- Global NestJS validation strips unknown fields and rejects non-whitelisted input.
-- Optional profile fields support `undefined` (leave unchanged) and `null` (clear value).
-- Experience end dates must be later than start dates.
-- Current positions must have an empty end date.
-- Skill names are unique within a Profile.
-- Apollo refetches the affected query after each successful mutation.
-- PostgreSQL data survives browser refreshes, backend restarts, and `docker compose down` as long as the named volume is retained.
-
-## Useful commands
-
-Backend:
-
-```bash
-npm run lint
-npm run build
-npm test
-```
-
-Frontend:
-
-```bash
-npm run lint
-npm run build
-```
-
-The current repository focuses on application structure and CRUD behaviour; automated tests are not included yet.
-
-## Design decisions
-
-- Profile is treated as a single portfolio record, so the API exposes read/update but no profile creation mutation.
-- Spoken languages remain typed static frontend content; technical skills come from GraphQL.
-- Prisma Client is generated inside `backend/src/generated/prisma` and compiled into `dist` with the NestJS application.
-- Docker uses `localhost:3000/graphql` for Apollo because GraphQL requests are made by the user's browser, not by the frontend container.
-- Project technologies are stored as a comma-separated display value, while Experience highlights and technologies use PostgreSQL arrays.
+https://beautiful-courage-production-c3bd.up.railway.app/graphql
