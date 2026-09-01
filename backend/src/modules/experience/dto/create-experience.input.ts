@@ -11,29 +11,39 @@ import {
   MinLength,
 } from 'class-validator';
 
-function trimString({ value }: { value: unknown }): unknown {
-  return typeof value === 'string' ? value.trim() : value;
+function trimString(value: unknown): unknown {
+  if (typeof value === 'string') {
+    return value.trim();
+  }
+
+  return value;
 }
 
-function trimStringArray({ value }: { value: unknown }): unknown {
-  return Array.isArray(value)
-    ? value.map((item: unknown) =>
-        typeof item === 'string' ? item.trim() : item,
-      )
-    : value;
+function trimStringArray(value: unknown): unknown {
+  if (!Array.isArray(value)) {
+    return value;
+  }
+
+  return value.map((item: unknown) => {
+    if (typeof item === 'string') {
+      return item.trim();
+    }
+
+    return item;
+  });
 }
 
 @InputType()
 export class CreateExperienceInput {
   @Field(() => String)
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(100)
   company!: string;
 
   @Field(() => String)
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(100)
@@ -41,14 +51,14 @@ export class CreateExperienceInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(100)
   employmentType?: string | null;
 
   @Field(() => String)
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @Matches(/^(0[1-9]|1[0-2])\/\d{4}$/, {
     message: 'startDate must use MM/YYYY format',
   })
@@ -56,7 +66,7 @@ export class CreateExperienceInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @Matches(/^(0[1-9]|1[0-2])\/\d{4}$/, {
     message: 'endDate must use MM/YYYY format',
   })
@@ -67,14 +77,14 @@ export class CreateExperienceInput {
   current = false;
 
   @Field(() => String)
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(1000)
   description!: string;
 
   @Field(() => [String])
-  @Transform(trimStringArray)
+  @Transform(({ value }) => trimStringArray(value))
   @IsArray()
   @ArrayMaxSize(30)
   @IsString({ each: true })
@@ -83,7 +93,7 @@ export class CreateExperienceInput {
   highlights!: string[];
 
   @Field(() => [String])
-  @Transform(trimStringArray)
+  @Transform(({ value }) => trimStringArray(value))
   @IsArray()
   @ArrayMaxSize(30)
   @IsString({ each: true })

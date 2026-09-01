@@ -72,10 +72,21 @@ export class ExperienceService {
       throw new NotFoundException('Experience not found');
     }
 
-    const startDate = data.startDate ?? experience.startDate;
-    const endDate =
-      data.endDate !== undefined ? data.endDate : experience.endDate;
-    const current = data.current ?? experience.current;
+    let startDate = experience.startDate;
+    let endDate = experience.endDate;
+    let current = experience.current;
+
+    if (data.startDate !== undefined) {
+      startDate = data.startDate;
+    }
+
+    if (data.endDate !== undefined) {
+      endDate = data.endDate;
+    }
+
+    if (data.current !== undefined) {
+      current = data.current;
+    }
 
     this.validateDates(startDate, endDate, current);
 

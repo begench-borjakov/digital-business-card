@@ -26,7 +26,11 @@ export class ExperienceRepository {
       where: { id },
     });
 
-    return experience ? toExperienceEntity(experience) : null;
+    if (experience) {
+      return toExperienceEntity(experience);
+    }
+
+    return null;
   }
 
   async create(

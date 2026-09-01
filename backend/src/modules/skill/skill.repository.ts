@@ -26,7 +26,11 @@ export class SkillRepository {
       where: { id },
     });
 
-    return skill ? toSkillEntity(skill) : null;
+    if (skill) {
+      return toSkillEntity(skill);
+    }
+
+    return null;
   }
 
   async findByProfileIdAndName(
@@ -42,7 +46,11 @@ export class SkillRepository {
       },
     });
 
-    return skill ? toSkillEntity(skill) : null;
+    if (skill) {
+      return toSkillEntity(skill);
+    }
+
+    return null;
   }
 
   async create(data: CreateSkillRepositoryData): Promise<SkillEntity> {

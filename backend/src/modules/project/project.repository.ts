@@ -26,7 +26,11 @@ export class ProjectRepository {
       where: { id },
     });
 
-    return project ? toProjectEntity(project) : null;
+    if (project) {
+      return toProjectEntity(project);
+    }
+
+    return null;
   }
 
   async create(data: CreateProjectRepositoryData): Promise<ProjectEntity> {

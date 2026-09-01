@@ -8,21 +8,25 @@ import {
   MinLength,
 } from 'class-validator';
 
-function trimString({ value }: { value: unknown }): unknown {
-  return typeof value === 'string' ? value.trim() : value;
+function trimString(value: unknown): unknown {
+  if (typeof value === 'string') {
+    return value.trim();
+  }
+
+  return value;
 }
 
 @InputType()
 export class CreateProjectInput {
   @Field(() => String)
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(100)
   name!: string;
 
   @Field(() => String)
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(1000)
@@ -30,7 +34,7 @@ export class CreateProjectInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(500)
@@ -38,7 +42,7 @@ export class CreateProjectInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsUrl({
     protocols: ['http', 'https'],
     require_protocol: true,
@@ -47,7 +51,7 @@ export class CreateProjectInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsUrl({
     protocols: ['http', 'https'],
     require_protocol: true,

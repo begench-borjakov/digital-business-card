@@ -11,7 +11,11 @@ export class ProfileRepository {
   async findFirst(): Promise<ProfileEntity | null> {
     const profile = await this.prisma.profile.findFirst();
 
-    return profile ? toProfileEntity(profile) : null;
+    if (profile) {
+      return toProfileEntity(profile);
+    }
+
+    return null;
   }
 
   async update(id: string, data: UpdateProfileData): Promise<ProfileEntity> {

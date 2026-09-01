@@ -11,35 +11,43 @@ import {
   ValidateIf,
 } from 'class-validator';
 
-function trimString({ value }: { value: unknown }): unknown {
-  return typeof value === 'string' ? value.trim() : value;
+function trimString(value: unknown): unknown {
+  if (typeof value === 'string') {
+    return value.trim();
+  }
+
+  return value;
 }
 
-function isProvided(_object: unknown, value: unknown): boolean {
-  return value !== undefined;
+function isProvided(value: unknown): boolean {
+  if (value !== undefined) {
+    return true;
+  }
+
+  return false;
 }
 
 @InputType()
 export class UpdateProfileInput {
   @Field(() => String, { nullable: true })
-  @ValidateIf(isProvided)
-  @Transform(trimString)
+  @ValidateIf((_object, value) => isProvided(value))
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(100)
   name?: string;
 
   @Field(() => String, { nullable: true })
-  @ValidateIf(isProvided)
-  @Transform(trimString)
+  @ValidateIf((_object, value) => isProvided(value))
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(100)
   title?: string;
 
   @Field(() => String, { nullable: true })
-  @ValidateIf(isProvided)
-  @Transform(trimString)
+  @ValidateIf((_object, value) => isProvided(value))
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(1000)
@@ -47,14 +55,14 @@ export class UpdateProfileInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsEmail()
   @MaxLength(255)
   email?: string | null;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @Matches(/^\+?[0-9\s().-]{7,30}$/, {
     message: 'phone must be a valid phone number',
@@ -64,7 +72,7 @@ export class UpdateProfileInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @Matches(
     /^(?:@[A-Za-z0-9_]{5,32}|https?:\/\/(?:www\.)?t\.me\/[A-Za-z0-9_]{5,32}\/?)$/i,
@@ -77,7 +85,7 @@ export class UpdateProfileInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsUrl({
     protocols: ['http', 'https'],
     require_protocol: true,
@@ -93,7 +101,7 @@ export class UpdateProfileInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsUrl({
     protocols: ['http', 'https'],
     require_protocol: true,
@@ -106,7 +114,7 @@ export class UpdateProfileInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @Transform(trimString)
+  @Transform(({ value }) => trimString(value))
   @IsString()
   @MinLength(1)
   @MaxLength(100)
